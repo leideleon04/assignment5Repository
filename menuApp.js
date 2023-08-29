@@ -1,110 +1,135 @@
-// creates Card Class and introduces suits and values
-class Card {
-    constructor(suit, value) {
-        this.suit = suit;
-        this.value = value;
+class Vehicle {
+    constructor (name, vehicleType){
+        this.name = name;
+        this.vehicleType = vehicleType;
     }
-
-    getFullName() {
-        return `${this.value} of ${this.suit}`;
+    describe(){
+        return`${this.name} uses a ${this.vehicleType}.`;
     }
 }
-// creates Player class and introduces cards with players
-class Player {
-    constructor(player, cards) {
-        this.player = player;
-        this.cards = cards;
+
+class Character {
+    constructor(name){
+        this.name = name;
+        this.characters = [];  // An array to store Character instances
     }
 
-    hasCards() {
-        return this.cards.length > 0;
-    }
-}
-// creates deck class. added hearts, spades, clubs and diamonds
-// also establishes suits
-class Deck {
-    constructor() {
-        this.deck = [];
-        const suits = ['Hearts', 'Spades', 'Clubs', 'Diamonds'];
-        const values = ['Ace', 2, 3, 4, 5, 6, 7, 8, 9, 10, 'Jack', 'Queen', 'King'];
-
-        for (let suit of suits) {
-            for (let value of values) {
-                this.deck.push(new Card(suit, value));
-            }
-        }
-    }
-// added shuffle mechanism to the code, so that each round will be random (like war)
-    shuffle() {
-        const deck = this.deck;
-        for (let i = this.deck.length - 1; i > 0; i--) {
-            const randomIndex = Math.floor(Math.random() * (i + 1));
-            [deck[i], deck[randomIndex]] = [deck[randomIndex], deck[i]];
-        }
-    }
-
-// added deal mechanism, telling java to push a new card to player 1 and player 2's cards
-    deal(player1, player2) {
-        while (this.deck.length > 0) {
-            player1.cards.push(this.deck.pop());
-            player2.cards.push(this.deck.pop());
-        }
-    }
-
-// this function is the "playgame" function that initializes the functions deal and shuffle, and mimic a round of war where both
-// players place a card, compare, and then calculate points based on the values
-// then, the game will see if the players have any cards, if so, the game restarts
-// if not, the game will end and java will announce the winner
-    playGame() {
-        const player1 = new Player("Player 1", []);
-        const player2 = new Player("Player 2", []);
-        const deck = new Deck();
-        deck.shuffle();
-        deck.deal(player1, player2);
-
-        let player1Points = 0;
-        let player2Points = 0;
-
-        function calculatePoints(card1, card2) {
-            if (card1.value > card2.value) {
-                return 1; // Player 1 wins the round
-            } else if (card2.value > card1.value) {
-                return 2; // Player 2 wins the round
-            } else {
-                return 0; // It's a tie
-            }
-        }
-        
-        while (player1.hasCards() && player2.hasCards()) { 
-            const card1 = player1.cards.pop();
-            const card2 = player2.cards.pop();
-
-            const roundPoints = calculatePoints(card1, card2);
-
-            if (roundPoints === 1) { // changed it to numbers so can call upon in if/else. 
-                player1Points++;
-            } else if (roundPoints === 2) {
-                player2Points++;
-            }
-
-            console.log(`${player1.player}: ${card1.getFullName()}`);
-            console.log(`${player2.player}: ${card2.getFullName()}`);
-        }
-
-        if (player1Points > player2Points) {
-            console.log(`${player1.player} wins with ${player1Points} points!`);
-        } else if (player2Points > player1Points) {
-            console.log(`${player2.player} wins with ${player2Points} points!`);
+    addCharacter(character){
+        if (character instanceof Character){
+            this.characters.push(character);
         } else {
-            console.log("It's a tie!");
+            throw new Error(`You can only add an instance of Character. Argument is not a character: ${character}`);
+        }
+    }
+}  
+
+class Menu{
+    constructor(){
+        this.character = [];
+        this.selectedCharacter = null;
+    }
+    start(){
+        let selection = this.showMainMenuOptions();
+
+        while (selection != 0){
+            switch(selection){
+                case '1':
+                    this.createCharacter();
+                    break;
+                case '2':
+                    this.viewCharacter();
+                    break;
+                case '3':
+                    this.deleteCharacter();
+                    break;
+                case '4':
+                    this.displayCharacter();
+                    break;
+                default:
+                    selection = 0;
+            }
+            selection = this.showMainMenuOptions();
+        }
+        alert('Goodbye!');
+        window.location.href = 'https://www.youtube.com/watch?v=2qgxAHW1w78'
+    }
+
+    createVehicle(character){
+        let vehicleName = prompt(`Enter a name for the vehicle of ${character.name}:`);
+        character.vehicleType = new Vehicle(vehicleName); // Assuming you have a Vehicle class
+        alert(`${vehicleName} has been added as the vehicle for ${character.name}.`);
+    }
+
+    showMainMenuOptions(){
+        return prompt(`
+        0) exit
+        1) Create Character
+        2) View Character
+        3) Delete Character
+        4) Display Character
+        `)
+    }
+    
+    showCharacterMenuOptions(characterInfo){
+        return prompt(`
+        0) back
+        1) create player
+        2) delete player
+        ----------------------
+        `)
+    }
+
+    createCharacter() {
+        let name = prompt('Enter name for your character:');
+        this.character.push(new Character(name));
+    
+        let createVehicleOption = prompt(`Do you want to create a vehicle for ${name}? (yes/no)`);
+    
+        if (createVehicleOption.toLowerCase() === 'yes') {
+            this.createVehicle(new Character(name));
+        }
+    }
+
+
+    displayCharacter(){
+        let characterString = '';
+        for (let i  = 0; i < this.character.length; i++){
+            characterString += i + ') ' + this.character[i].name + '\n';
+        }
+        alert(characterString);
+    }
+
+    deleteCharacter(){
+        let index = prompt('Enter the index of the character you wish to delete:');
+        if (index > -1 && index < this.character.length){
+            this.character.splice(index, 1);
+        }
+    }
+
+    viewCharacter(){
+        let index = prompt('Enter the index of the team you wish to view:');
+        if (index > -1 && index < this.character.length){
+            this.selectedCharacter = this.character[index];
+            let description = 'Character Name: ' + this.selectedCharacter.name + '\n';
+
+            for(let i = 0; i < this.selectedCharacter.vehicle.length; i++){
+               description += i + ') ' + this.selectedCharacter.vehicle[i].name +
+                ' - ' + this.selectedCharacter.vehicle[i].position + '\n';
+            }
+
+            let selection = this.showCharacterMenuOptions(description);
+            switch(selection){
+            case '1':
+                this.createCharacter();
+                break;
+            case '2':
+                this.deleteCharacter();
+            }
         }
     }
 }
-
-// Create a new deck and play the game
-const deck = new Deck();
-deck.playGame();
-    }
+let menu = new Menu();
+menu.start();
 }
 let menu = new Menu();
 menu.start();
