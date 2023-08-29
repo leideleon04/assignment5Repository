@@ -90,13 +90,26 @@ class Menu{
         }
     }
 
+    displayCharacter() {
+        let characterIndex = prompt('Enter the index of the character you wish to view:');
+        if (characterIndex > -1 && characterIndex < this.character.length) {
+            this.selectedCharacter = this.character[characterIndex];
+            let description = 'Character Name: ' + this.selectedCharacter.name + '\n';
 
-    displayCharacter(){
-        let characterString = '';
-        for (let i  = 0; i < this.character.length; i++){
-            characterString += i + ') ' + this.character[i].name + '\n';
+            for (let i = 0; i < this.selectedCharacter.vehicles.length; i++) {
+                description += i + ') ' + this.selectedCharacter.vehicles[i].name +
+                    ' - ' + this.selectedCharacter.vehicles[i].vehicleType + '\n';
+            }
         }
-        alert(characterString);
+        let selection = this.showCharacterMenuOptions(description);
+        switch (selection) {
+            case '1':
+                this.createVehicle(this.selectedCharacter);
+                break;
+            case '2':
+                this.deleteCharacter();
+                break;
+        }
     }
 
     deleteCharacter(){
@@ -127,9 +140,6 @@ class Menu{
             }
         }
     }
-}
-let menu = new Menu();
-menu.start();
 }
 let menu = new Menu();
 menu.start();
