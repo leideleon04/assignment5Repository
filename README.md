@@ -1,14 +1,7 @@
-"# warCardGameRepository" 
-
-Hello there, 
+"# assignment5Repository" 
 
 
-This is a simple card game that reads through the default browser's console. 
-Each game and round is randomized, as it mimics the card game War. At of a round, the console will announce a winner.
-At the end of the game, the console will anounce a winner after tallying the points earned. 
+Hello! I've created a Menu App with all functionality that also jumps to a youtube video.
 
 
-Have fun checking out my code,
-
-
-Lei de Leon.
+Enjoy!
